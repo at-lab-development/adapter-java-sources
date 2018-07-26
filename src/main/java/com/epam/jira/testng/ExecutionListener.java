@@ -140,7 +140,7 @@ public class ExecutionListener extends TestListenerAdapter {
             if (parameters != null) issue.setParameters(parameters);
         }
 
-        if (!issues.isEmpty()) FileUtils.writeXml(new Issues(issues), "tm-testng.xml");
+        if (!issues.isEmpty()) FileUtils.writeXml(new Issues(issues), "jira-tm-report.xml");
     }
 
     // Auxiliary methods
