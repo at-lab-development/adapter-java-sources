@@ -6,7 +6,7 @@ This dependency gathers basic build information and useful artifacts (titled val
 
 The key thing is that this adapter are working in tandem with Jenkins Test Management plugin which processes gathered information and updates Jira issues via REST API.
 
-![Scheme](https://github.com/teo-rakan/test-management-adapter/blob/master/images/readme_scheme.jpg)
+![Scheme](https://github.com/Pavel-Irher/test-management-adapter-java/blob/master/images/readme_scheme.jpg)
 
 ## Installation
 
@@ -160,4 +160,4 @@ If you want to rerun your test several times, you will need to use **JiraTestKey
     }
 ```
 
-After running the `tm-testng.xml` results file with attachments will be created in your project `target` directory.
+After running the `jira-tm-report.xml` results file with attachments will be created in your project `target` directory.
