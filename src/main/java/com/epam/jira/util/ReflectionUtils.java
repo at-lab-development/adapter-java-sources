@@ -32,7 +32,7 @@ class ReflectionUtils {
                 .findFirst().orElse(null);
     }
 
-    private static Object findAnnotationInCallStack(Class annotationClass, String className, String methodName, int line)  {
+    private static Object findAnnotationInCallStack(Class annotationClass, String className, String methodName, int line) {
         try {
             CtMethod method = findMethod(className, methodName, line);
             Object annotation = method.getAnnotation(annotationClass);
@@ -42,7 +42,7 @@ class ReflectionUtils {
         return null;
     }
 
-    private static Object findAnnotationInCallStack(Class annotationClass, StackTraceElement[] trace, int depth)  {
+    private static Object findAnnotationInCallStack(Class annotationClass, StackTraceElement[] trace, int depth) {
         if (trace.length <= depth) return null;
 
         StackTraceElement traceElement = trace[depth];

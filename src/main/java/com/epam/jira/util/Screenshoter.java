@@ -30,7 +30,7 @@ public class Screenshoter {
         }
 
         File screenshot = ((TakesScreenshot) driverInstance).getScreenshotAs(OutputType.FILE);
-        String screenshotName = String.format(SCREENSHOT_FILE, LocalDateTime.now().toString().replace(":","-"));
+        String screenshotName = String.format(SCREENSHOT_FILE, LocalDateTime.now().toString().replace(":", "-"));
         String filePath = FileUtils.saveFile(screenshot, screenshotName);
 
         return filePath != null ? screenshotName : null;

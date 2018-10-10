@@ -10,8 +10,8 @@ import java.lang.reflect.Method;
 
 public class RetryAnalyzer implements IRetryAnalyzer {
 
-    private int counter = 0;
     private final int MAX_DEFAULT_ATTEMPTS = 1;
+    private int counter = 0;
 
     boolean wasRerun() {
         return counter > 0;

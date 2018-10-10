@@ -10,10 +10,10 @@ import com.epam.jira.util.JiraInfoProvider;
 import com.epam.jira.util.Screenshoter;
 import org.testng.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 
 public class ExecutionListener extends TestListenerAdapter {
 
@@ -109,7 +109,7 @@ public class ExecutionListener extends TestListenerAdapter {
                 issue.setSummary(String.format(dependencies, key));
             } else {
                 String message = skipAnalyzer.getLastFailedConfig();
-                if (message != null){
+                if (message != null) {
                     List<String> attachments = new ArrayList<>();
                     attachments.add(getAttachmentPath(message));
                     issue.setSummary("Test method was blocked because of failed config method " + message);

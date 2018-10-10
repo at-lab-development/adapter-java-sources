@@ -1,13 +1,26 @@
 package com.epam.jira.util;
 
+import com.epam.jira.entity.Issue;
 import com.epam.jira.entity.Issues;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import java.io.*;
+import javax.xml.bind.Unmarshaller;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /**
@@ -25,8 +38,6 @@ public class FileUtils {
             String exceptionMessage = throwable.getMessage();
             if (exceptionMessage.contains("\n"))
                 exceptionMessage = exceptionMessage.substring(0, exceptionMessage.indexOf('\n'));
-
-
             FileUtils.writeStackTrace(throwable, filePath);
             message = "Failed due to: " + throwable.getClass().getName() + ": " + exceptionMessage
                     + ".\nFull stack trace attached as " + filePath;
@@ -36,8 +47,9 @@ public class FileUtils {
 
     /**
      * Writes stack trace in temporary file and save it to attachments directory
+     *
      * @param throwable The exception for getting stacktrace
-     * @param filePath The path for output file
+     * @param filePath  The path for output file
      */
     private static void writeStackTrace(Throwable throwable, String filePath) {
         try {
@@ -57,7 +69,8 @@ public class FileUtils {
      * default attachments directory already exists the file will be created in
      * child directory with name contains current time in nanoseconds using
      * System::nanoTime possibilities.
-     * @param file the file to save
+     *
+     * @param file        the file to save
      * @param newFilePath the path relative to attachments dir
      * @return the path where file was actually saved
      */
@@ -79,7 +92,8 @@ public class FileUtils {
     /**
      * Parse xml file using JAXB possibilities. The entities for marshaling are the same as in
      * Test Management Jira plugin.
-     * @param issues the list of issues for writing
+     *
+     * @param issues   the list of issues for writing
      * @param filePath the path to output file
      */
     public static void writeXml(Issues issues, String filePath) {
@@ -90,6 +104,32 @@ public class FileUtils {
             marshaller.marshal(issues, new File("." + TARGET_DIR + filePath));
         } catch (JAXBException ex) {
             System.out.println(ex.getMessage());
+        }
+    }
+
+    /**
+     * Parse xml file using JAXB possibilities. The entities for marshaling are the same as in
+     * Test Management Jira plugin.
+     *
+     * @param issues   the list of issues for writing
+     * @param filePath the path to output file
+     */
+    public static void writeXmlJunit(Issues issues, String filePath) {
+        File configFile = new File("." + TARGET_DIR + filePath);
+        List<Issue> issuesList = issues.getIssues();
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(Issues.class);
+            if (configFile.exists() && configFile.isFile()) {
+                Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+                Issues issuesExisting = (Issues) unmarshaller.unmarshal(configFile);
+                issuesList = new ArrayList<>(issuesExisting.getIssues());
+                issuesExisting.setIssues(issuesList);
+            }
+            Marshaller marshaller = jaxbContext.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            marshaller.marshal(new Issues(issuesList), configFile);
+        } catch (JAXBException e) {
+            System.out.println(e.getMessage());
         }
     }
 

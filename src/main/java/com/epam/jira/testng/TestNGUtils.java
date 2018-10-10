@@ -9,12 +9,12 @@ import java.lang.reflect.Method;
 
 class TestNGUtils {
 
-    static String getFullMethodName (ITestResult result) {
+    static String getFullMethodName(ITestResult result) {
         String methodName = result.getMethod().getConstructorOrMethod().getMethod().getName();
         return result.getMethod().getTestClass().getName() + "." + methodName;
     }
 
-    static String [] getMethodGroups (ITestResult result) {
+    static String[] getMethodGroups(ITestResult result) {
         Method method = result.getMethod().getConstructorOrMethod().getMethod();
         Test annotation = method.getAnnotation(Test.class);
         if (annotation != null) {
@@ -23,7 +23,7 @@ class TestNGUtils {
         return null;
     }
 
-    static String [] getTestMethodDependencies(Method method) {
+    static String[] getTestMethodDependencies(Method method) {
         Test annotation = method.getAnnotation(Test.class);
         if (annotation != null) {
             return annotation.dependsOnMethods();
@@ -31,7 +31,7 @@ class TestNGUtils {
         return null;
     }
 
-    static String [] getTestGroupsDependencies(Method method) {
+    static String[] getTestGroupsDependencies(Method method) {
         Test annotation = method.getAnnotation(Test.class);
         if (annotation != null) {
             return annotation.dependsOnGroups();

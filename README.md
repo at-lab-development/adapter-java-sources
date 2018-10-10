@@ -15,24 +15,27 @@ At this time, Test Management adapter installation is possible only in **local**
 ### Using the command line
 
 ```bash
-mvn install::install-file -Dfile=test-management-adapter-1.7-jar-with-dependencies.jar 
+mvn install::install-file -Dfile=test-management-adapter-1.8-jar-with-dependencies.jar 
                           -DgroupId=com.epam.jira 
                           -DartifactId=test-management-adapter 
-                          -Dversion=1.7
+                          -Dversion=1.8
                           -Dpackaging=jar
 ```
-**For copy-paste:** `mvn install::install-file -Dfile=test-management-adapter-1.7-jar-with-dependencies.jar -DgroupId=com.epam.jira -DartifactId=test-management-adapter -Dversion=1.7 -Dpackaging=jar`
+**For copy-paste:** `mvn install::install-file -Dfile=test-management-adapter-1.8-jar-with-dependencies.jar -DgroupId=com.epam.jira -DartifactId=test-management-adapter -Dversion=1.8 -Dpackaging=jar`
 
 After that you need to add next dependency to your pom-file: 
 ```bash
 <dependency>
     <groupId>com.epam.jira</groupId>
     <artifactId>test-management-adapter</artifactId>
-    <version>1.7</version>
+    <version>1.8</version>
 </dependency>
 ```
 
 ## Execution Listener
+
+### TestNG
+
 Add `ExecutionListener` to your TestNG listeners by one of the following methods:
 
 ### Using _maven-surefire-plugin_ in your pom.xml
@@ -94,6 +97,85 @@ Add `ExecutionListener` to your TestNG listeners by one of the following methods
     testNG.setTestClasses(new Class[] { TestClass.class });
     testNG.addListener(new ExecutionListener());
     testNG.run();
+  }
+```
+
+### JUnit
+
+Add `ExecutionListener` to your JUnit listeners by one of the following methods:
+
+### Using _maven-surefire-plugin_ in your pom.xml
+
+```bash
+  <build>
+      <plugins>
+          [...]
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <version>2.20.1</version>
+              <configuration>
+                  <properties>
+                      [...]
+                      <property>
+                          <name>listener</name>
+                          <value>com.epam.jira.junit.ExecutionListener</value>
+                      </property>
+                      [...]
+                  </properties>
+              </configuration>
+          </plugin>
+          [...]
+      </plugins>
+  </build>
+```
+
+### Using _exec-maven-plugin_ in your pom.xml
+
+```bash
+  <build>
+      <plugins>
+          [...]
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>com.epam.talixo.framework.runner.TestRunner</mainClass>
+                    <additionalClasspathElements>
+                        <additionalClasspathElement>${basedir}/test-management-adapter-1.8-jar-with-dependencies.jar
+                        </additionalClasspathElement>
+                    </additionalClasspathElements>
+                </configuration>
+            </plugin>
+          [...]
+      </plugins>
+  </build>
+```
+
+### Adding listeners through JUnit _addListener()_ API
+
+```bash
+  public static void main(String[] args) {
+    JUnitCore jUnitCore = new JUnitCore();
+    jUnitCore.addListener(new ExecutionListener());
+    jUnitCore.run(TestClass.class);
+  }
+```
+
+### Using _@Listeners_ annotation at class level
+
+```bash
+  @RunWith(com.epam.jira.junit.TestRunner.class)
+  public class TestClass {
+      // ...
   }
 ```
 
